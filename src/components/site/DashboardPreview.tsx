@@ -1,4 +1,4 @@
-import { ArrowUpRight, Bell, TrendingUp, TrendingDown } from "lucide-react";
+import { ArrowUpRight, Bell, TrendingUp } from "lucide-react";
 
 export function DashboardPreview() {
   return (
@@ -118,5 +118,3 @@ function Row({ label, value, sub, tone }: { label: string; value: string; sub?: 
   );
 }
 
-// avoid unused
-void TrendingDown;
