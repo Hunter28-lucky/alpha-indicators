@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndicatorsRouteImport } from './routes/indicators'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CheckoutId2RouteImport } from './routes/checkout.$id 2'
 import { Route as CheckoutIdRouteImport } from './routes/checkout.$id'
 
 const IndicatorsRoute = IndicatorsRouteImport.update({
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutId2Route = CheckoutId2RouteImport.update({
+  id: '/checkout/$id 2',
+  path: '/checkout/$id 2',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckoutIdRoute = CheckoutIdRouteImport.update({
   id: '/checkout/$id',
   path: '/checkout/$id',
@@ -33,30 +39,34 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/indicators': typeof IndicatorsRoute
   '/checkout/$id': typeof CheckoutIdRoute
+  '/checkout/$id 2': typeof CheckoutId2Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/indicators': typeof IndicatorsRoute
   '/checkout/$id': typeof CheckoutIdRoute
+  '/checkout/$id 2': typeof CheckoutId2Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/indicators': typeof IndicatorsRoute
   '/checkout/$id': typeof CheckoutIdRoute
+  '/checkout/$id 2': typeof CheckoutId2Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/indicators' | '/checkout/$id'
+  fullPaths: '/' | '/indicators' | '/checkout/$id' | '/checkout/$id 2'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/indicators' | '/checkout/$id'
-  id: '__root__' | '/' | '/indicators' | '/checkout/$id'
+  to: '/' | '/indicators' | '/checkout/$id' | '/checkout/$id 2'
+  id: '__root__' | '/' | '/indicators' | '/checkout/$id' | '/checkout/$id 2'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   IndicatorsRoute: typeof IndicatorsRoute
   CheckoutIdRoute: typeof CheckoutIdRoute
+  CheckoutId2Route: typeof CheckoutId2Route
 }
 
 declare module '@tanstack/react-router' {
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/$id 2': {
+      id: '/checkout/$id 2'
+      path: '/checkout/$id 2'
+      fullPath: '/checkout/$id 2'
+      preLoaderRoute: typeof CheckoutId2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checkout/$id': {
       id: '/checkout/$id'
       path: '/checkout/$id'
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   IndicatorsRoute: IndicatorsRoute,
   CheckoutIdRoute: CheckoutIdRoute,
+  CheckoutId2Route: CheckoutId2Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
