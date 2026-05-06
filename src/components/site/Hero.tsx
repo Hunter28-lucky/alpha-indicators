@@ -59,19 +59,29 @@ export function Hero() {
         </div>
 
         {/* Stat strip */}
-        <div className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border/60 bg-border/60 sm:grid-cols-4">
+        <div className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border/60 bg-border/60 sm:mt-14 sm:grid-cols-4">
           {[
-            { icon: BarChart3, label: "Active Traders", value: "10,420+" },
-            { icon: ShieldCheck, label: "Avg. Win Rate", value: "68.4%", accent: "profit" },
-            { icon: Zap, label: "Markets Covered", value: "Equities · FX · Crypto" },
-            { icon: Activity, label: "Backtest Years", value: "12+" },
+            { icon: BarChart3, label: "Active Traders", value: "10,420", suffix: "+" },
+            { icon: ShieldCheck, label: "Avg. Win Rate", value: "68.4", suffix: "%", accent: "profit" },
+            { icon: Activity, label: "Backtest Years", value: "12", suffix: "+" },
+            { icon: Zap, label: "Markets Covered", value: "3", suffix: "", note: "Equities · FX · Crypto" },
           ].map((s) => (
-            <div key={s.label} className="bg-surface/80 px-5 py-5 backdrop-blur">
+            <div key={s.label} className="flex flex-col bg-surface/80 px-4 py-5 backdrop-blur sm:px-5">
               <s.icon className="h-4 w-4 text-gold" />
-              <div className={`mt-3 font-mono text-base font-semibold ${s.accent === "profit" ? "text-profit" : "text-foreground"}`}>
-                {s.value}
+              <div className="mt-3 flex items-baseline gap-0.5">
+                <span className={`font-mono text-2xl font-semibold leading-none tracking-tight sm:text-3xl ${s.accent === "profit" ? "text-profit" : "text-foreground"}`}>
+                  {s.value}
+                </span>
+                {s.suffix && (
+                  <span className={`font-mono text-lg font-semibold leading-none ${s.accent === "profit" ? "text-profit" : "text-gold"}`}>
+                    {s.suffix}
+                  </span>
+                )}
               </div>
-              <div className="mt-1 text-xs text-muted-foreground">{s.label}</div>
+              <div className="mt-2 text-[11px] uppercase tracking-wider text-muted-foreground sm:text-xs">{s.label}</div>
+              {s.note && (
+                <div className="mt-1 font-mono text-[10px] text-muted-foreground/80">{s.note}</div>
+              )}
             </div>
           ))}
         </div>
