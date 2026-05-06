@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { ArrowRight, Crosshair, Shield, Target } from "lucide-react";
 import ind1 from "@/assets/indicator-1.jpg";
 import ind2 from "@/assets/indicator-2.jpg";
@@ -6,6 +7,7 @@ import ind4 from "@/assets/indicator-4.jpg";
 
 const INDICATORS = [
   {
+    id: "liquidity",
     name: "Liquidity Zones Pro",
     tag: "Smart Money",
     desc: "Maps institutional liquidity pools, sweep zones and order blocks in real time across any timeframe.",
@@ -13,6 +15,7 @@ const INDICATORS = [
     metrics: { wr: "71.2%", rr: "1 : 2.4" },
   },
   {
+    id: "smart-money",
     name: "Smart Money Engine",
     tag: "Multi-Timeframe",
     desc: "ICT-based logic detecting market structure shifts, BOS and CHoCH with high-probability confluence filters.",
@@ -20,6 +23,7 @@ const INDICATORS = [
     metrics: { wr: "66.8%", rr: "1 : 3.1" },
   },
   {
+    id: "mean-reversion",
     name: "FVG Precision",
     tag: "Mean Reversion",
     desc: "Highlights fair value gaps and imbalance zones with statistical retracement probability scoring.",
@@ -27,6 +31,7 @@ const INDICATORS = [
     metrics: { wr: "64.1%", rr: "1 : 2.8" },
   },
   {
+    id: "volume-footprint",
     name: "Volume Footprint",
     tag: "Order Flow",
     desc: "Volume profile + delta footprint surfaces real participation behind every move on intraday charts.",
@@ -102,9 +107,13 @@ export function Indicators() {
                       <div className="mt-0.5 text-foreground">{ind.metrics.rr}</div>
                     </div>
                   </div>
-                  <button className="inline-flex items-center gap-1 text-sm font-medium text-gold transition-colors hover:text-foreground">
-                    View details <ArrowRight className="h-3.5 w-3.5" />
-                  </button>
+                  <Link
+                    to="/checkout/$id"
+                    params={{ id: ind.id }}
+                    className="inline-flex items-center gap-1 rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
+                  >
+                    Buy Now <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
                 </div>
               </div>
             </article>

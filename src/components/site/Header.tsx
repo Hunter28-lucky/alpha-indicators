@@ -35,8 +35,8 @@ export function Header() {
         </nav>
         <div className="hidden items-center gap-3 md:flex">
           <Link
-            to="/checkout"
-            className="rounded-md bg-gradient-to-b from-gold to-gold/80 px-4 py-2 text-sm font-medium text-gold-foreground shadow-[0_0_20px_-6px_oklch(0.82_0.14_85/0.6)] transition-transform hover:-translate-y-0.5"
+            to="/indicators"
+            className="rounded-md bg-gradient-to-b from-emerald-500 to-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-[0_0_20px_-6px_oklch(0.82_0.14_85/0.6)] transition-transform hover:-translate-y-0.5"
           >
             Get Access
           </Link>
@@ -63,9 +63,9 @@ export function Header() {
               </a>
             ))}
             <Link
-              to="/checkout"
+              to="/indicators"
               onClick={() => setOpen(false)}
-              className="mt-2 rounded-md bg-gradient-to-b from-gold to-gold/80 px-4 py-3 text-center text-sm font-medium text-gold-foreground"
+              className="mt-2 rounded-md bg-gradient-to-b from-emerald-500 to-emerald-600 px-4 py-3 text-center text-sm font-medium text-white"
             >
               Get Access
             </Link>

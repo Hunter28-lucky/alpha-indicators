@@ -13,7 +13,7 @@ const TIERS = [
       "Email alerts",
       "Community access",
     ],
-    cta: "Get Access",
+    cta: "Buy Now",
     highlight: false,
     plan: "basic",
   },
@@ -29,7 +29,7 @@ const TIERS = [
       "Weekly strategy session",
       "Risk calculator",
     ],
-    cta: "Get Pro Access",
+    cta: "Buy Pro",
     highlight: true,
     plan: "pro",
   },
@@ -46,7 +46,7 @@ const TIERS = [
       "Custom strategy build",
       "Priority support",
     ],
-    cta: "Get Elite Access",
+    cta: "Buy Elite",
     highlight: false,
     plan: "elite",
   },
@@ -101,12 +101,11 @@ export function Pricing() {
               </ul>
 
               <Link
-                to="/checkout"
-                search={{ plan: t.plan }}
+                to="/indicators"
                 className={`mt-8 inline-flex items-center justify-center rounded-md px-4 py-3 text-sm font-semibold transition-transform hover:-translate-y-0.5 ${
                   t.highlight
-                    ? "bg-gradient-to-b from-gold to-gold/80 text-gold-foreground shadow-[0_0_20px_-6px_oklch(0.82_0.14_85/0.6)]"
-                    : "border border-border bg-background text-foreground hover:bg-surface-elevated"
+                    ? "bg-gradient-to-b from-emerald-500 to-emerald-600 text-white shadow-[0_0_20px_-6px_oklch(0.82_0.14_85/0.6)]"
+                    : "border border-border bg-emerald-600 text-white hover:bg-emerald-700"
                 }`}
               >
                 {t.cta}
