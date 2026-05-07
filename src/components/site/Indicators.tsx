@@ -52,7 +52,7 @@ export function Indicators() {
   return (
     <section id="indicators" className="relative border-b border-border/40 py-24 lg:py-32 overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
-      
+
       <div className="relative z-10 mx-auto max-w-7xl px-5 lg:px-8">
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 rounded-full border border-gold/20 bg-gold/10 px-3 py-1 mb-6 text-xs font-medium text-gold backdrop-blur-sm">
