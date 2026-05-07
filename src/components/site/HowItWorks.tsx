@@ -24,7 +24,7 @@ const STEPS = [
 export function HowItWorks() {
   return (
     <section id="how" className="border-b border-border/60 py-20 lg:py-28">
-      <div className="mx-auto max-w-7xl px-5 lg:px-8">
+      <div className="mx-auto max-w-7xl px-5 lg:px-8 text-left">
         <div className="max-w-2xl">
           <span className="font-mono text-xs uppercase tracking-widest text-gold">
             · How it works
@@ -34,11 +34,11 @@ export function HowItWorks() {
           </h2>
         </div>
 
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 md:grid-cols-3">
           {STEPS.map((s) => (
             <div
               key={s.n}
-              className="relative overflow-hidden rounded-xl border border-border/60 bg-surface p-7"
+              className="relative overflow-hidden rounded-xl border border-border/60 bg-surface p-7 text-left"
             >
               <div className="font-mono text-xs text-gold">{s.n}</div>
               <s.icon className="mt-6 h-6 w-6 text-gold" strokeWidth={1.5} />

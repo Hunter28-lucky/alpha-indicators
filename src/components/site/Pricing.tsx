@@ -113,6 +113,21 @@ export function Pricing() {
             </div>
           ))}
         </div>
+
+        <div className="mt-12 flex flex-col items-center justify-between gap-6 rounded-xl border border-border/60 bg-gradient-to-r from-surface to-surface/50 p-8 md:flex-row lg:p-10">
+          <div>
+            <h3 className="text-xl font-semibold">Need a Custom Strategy?</h3>
+            <p className="mt-2 text-sm text-muted-foreground max-w-2xl">
+              Have a unique edge or specific trading logic? We can build a custom TradingView indicator or screener tailored exactly to your requirements, complete with alerts and backtesting capabilities.
+            </p>
+          </div>
+          <Link
+            to="/custom-indicator"
+            className="flex-shrink-0 inline-flex items-center justify-center rounded-md border border-border/60 bg-surface px-6 py-3 text-sm font-semibold transition-transform hover:-translate-y-0.5 hover:bg-muted"
+          >
+            Get a Custom Indicator
+          </Link>
+        </div>
       </div>
     </section>
   );

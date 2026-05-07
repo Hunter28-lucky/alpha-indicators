@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Header } from "@/components/site/Header";
-import { Footer } from "@/components/site/Footer";
 import {
   Check,
   ShieldCheck,
@@ -10,7 +9,9 @@ import {
   ScanLine,
   Clock,
   AlertCircle,
-  Lock
+  Lock,
+  Headset,
+  CheckCircle2
 } from "lucide-react";
 import qrCodeImage from "@/assets/upi-qr.png";
 import ind1 from "@/assets/indicator-1.jpg";
@@ -220,7 +221,7 @@ function CheckoutPage() {
                     </div>
                   )}
 
-                  <div className="mt-12 text-center w-full pt-6 border-t border-slate-100">
+                  <div className="mt-10 text-center w-full pt-6 border-t border-slate-100">
                     <p className="text-sm text-slate-600 flex items-center justify-center gap-2 font-medium">
                       <ShieldCheck className="w-5 h-5 text-emerald-500" />
                       100% Secure Payment by Naviaxis
@@ -229,6 +230,19 @@ function CheckoutPage() {
                       Your access is activated instantly upon successful payment.
                     </p>
                   </div>
+
+                  <div className="mt-6 grid grid-cols-2 gap-3 w-full max-w-[280px]">
+                    <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
+                      <Lock className="w-5 h-5 text-slate-700 mb-1.5" />
+                      <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wide">256-bit SSL</span>
+                      <span className="text-[10px] text-slate-500">Secure Checkout</span>
+                    </div>
+                    <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-500 mb-1.5" />
+                      <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wide">Instant Setup</span>
+                      <span className="text-[10px] text-slate-500">Automated Delivery</span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -236,7 +250,17 @@ function CheckoutPage() {
         </div>
       </main>
       
-      <Footer />
+      <footer className="w-full border-t border-slate-200 bg-white py-6 px-4 md:px-8 text-center md:text-left">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-medium text-slate-500">
+          <span>© {new Date().getFullYear()} Veridian. All rights reserved.</span>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+            <Link to="/terms" className="hover:text-slate-900 transition-colors">Terms of Service</Link>
+            <a href="#" className="hover:text-slate-900 transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-slate-900 transition-colors">Refund Policy</a>
+            <a href="#" className="hover:text-slate-900 transition-colors">Support</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

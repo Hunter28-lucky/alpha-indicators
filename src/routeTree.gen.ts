@@ -9,14 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as IndicatorsRouteImport } from './routes/indicators'
+import { Route as CustomIndicatorRouteImport } from './routes/custom-indicator'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CheckoutId2RouteImport } from './routes/checkout.$id 2'
 import { Route as CheckoutIdRouteImport } from './routes/checkout.$id'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndicatorsRoute = IndicatorsRouteImport.update({
   id: '/indicators',
   path: '/indicators',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustomIndicatorRoute = CustomIndicatorRouteImport.update({
+  id: '/custom-indicator',
+  path: '/custom-indicator',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,45 +49,86 @@ const CheckoutIdRoute = CheckoutIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/custom-indicator': typeof CustomIndicatorRoute
   '/indicators': typeof IndicatorsRoute
+  '/terms': typeof TermsRoute
   '/checkout/$id': typeof CheckoutIdRoute
   '/checkout/$id 2': typeof CheckoutId2Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/custom-indicator': typeof CustomIndicatorRoute
   '/indicators': typeof IndicatorsRoute
+  '/terms': typeof TermsRoute
   '/checkout/$id': typeof CheckoutIdRoute
   '/checkout/$id 2': typeof CheckoutId2Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/custom-indicator': typeof CustomIndicatorRoute
   '/indicators': typeof IndicatorsRoute
+  '/terms': typeof TermsRoute
   '/checkout/$id': typeof CheckoutIdRoute
   '/checkout/$id 2': typeof CheckoutId2Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/indicators' | '/checkout/$id' | '/checkout/$id 2'
+  fullPaths:
+    | '/'
+    | '/custom-indicator'
+    | '/indicators'
+    | '/terms'
+    | '/checkout/$id'
+    | '/checkout/$id 2'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/indicators' | '/checkout/$id' | '/checkout/$id 2'
-  id: '__root__' | '/' | '/indicators' | '/checkout/$id' | '/checkout/$id 2'
+  to:
+    | '/'
+    | '/custom-indicator'
+    | '/indicators'
+    | '/terms'
+    | '/checkout/$id'
+    | '/checkout/$id 2'
+  id:
+    | '__root__'
+    | '/'
+    | '/custom-indicator'
+    | '/indicators'
+    | '/terms'
+    | '/checkout/$id'
+    | '/checkout/$id 2'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CustomIndicatorRoute: typeof CustomIndicatorRoute
   IndicatorsRoute: typeof IndicatorsRoute
+  TermsRoute: typeof TermsRoute
   CheckoutIdRoute: typeof CheckoutIdRoute
   CheckoutId2Route: typeof CheckoutId2Route
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/indicators': {
       id: '/indicators'
       path: '/indicators'
       fullPath: '/indicators'
       preLoaderRoute: typeof IndicatorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/custom-indicator': {
+      id: '/custom-indicator'
+      path: '/custom-indicator'
+      fullPath: '/custom-indicator'
+      preLoaderRoute: typeof CustomIndicatorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -104,7 +157,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CustomIndicatorRoute: CustomIndicatorRoute,
   IndicatorsRoute: IndicatorsRoute,
+  TermsRoute: TermsRoute,
   CheckoutIdRoute: CheckoutIdRoute,
   CheckoutId2Route: CheckoutId2Route,
 }

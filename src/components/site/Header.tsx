@@ -9,6 +9,7 @@ export function Header() {
     { label: "Performance", href: "/#performance" },
     { label: "How it works", href: "/#how" },
     { label: "Pricing", href: "/#pricing" },
+    { label: "Custom Strategies", href: "/custom-indicator" },
     { label: "FAQ", href: "/#faq" },
   ];
   return (

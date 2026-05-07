@@ -1,26 +1,86 @@
-const TICKERS = [
-  { s: "NIFTY 50", p: "24,712.30", c: "+0.84%", up: true },
-  { s: "BANKNIFTY", p: "52,408.15", c: "+1.12%", up: true },
-  { s: "BTC/USD", p: "97,420.50", c: "-0.42%", up: false },
-  { s: "EUR/USD", p: "1.0824", c: "+0.18%", up: true },
-  { s: "GOLD", p: "2,684.10", c: "+0.61%", up: true },
-  { s: "SPX500", p: "5,872.40", c: "-0.23%", up: false },
-  { s: "ETH/USD", p: "3,412.20", c: "+2.04%", up: true },
-  { s: "CRUDE", p: "78.32", c: "-1.05%", up: false },
-  { s: "RELIANCE", p: "1,294.80", c: "+0.51%", up: true },
-  { s: "TCS", p: "4,128.65", c: "-0.32%", up: false },
+import { useEffect, useState } from "react";
+
+const INITIAL_TICKERS = [
+  { s: "NIFTY 50", sym: "^NSEI", p: "...", c: "...", up: true },
+  { s: "BANKNIFTY", sym: "^NSEBANK", p: "...", c: "...", up: true },
+  { s: "BTC/USD", sym: "BTC-USD", p: "...", c: "...", up: true },
+  { s: "EUR/USD", sym: "EURUSD=X", p: "...", c: "...", up: true },
+  { s: "GOLD", sym: "GC=F", p: "...", c: "...", up: true },
+  { s: "SPX500", sym: "^GSPC", p: "...", c: "...", up: true },
+  { s: "ETH/USD", sym: "ETH-USD", p: "...", c: "...", up: true },
+  { s: "CRUDE", sym: "CL=F", p: "...", c: "...", up: true },
+  { s: "RELIANCE", sym: "RELIANCE.NS", p: "...", c: "...", up: true },
+  { s: "TCS", sym: "TCS.NS", p: "...", c: "...", up: true },
 ];
 
 export function Ticker() {
-  const items = [...TICKERS, ...TICKERS];
+  const [tickers, setTickers] = useState(INITIAL_TICKERS);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function fetchLivePrices() {
+      if (!mounted) return;
+      
+      const updated = await Promise.all(
+        INITIAL_TICKERS.map(async (ticker) => {
+          try {
+            // Using a CORS proxy to fetch directly from Yahoo Finance in the browser
+            const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker.sym}?interval=1m`;
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+            
+            const res = await fetch(proxyUrl);
+            const data = await res.json();
+            const yfData = JSON.parse(data.contents);
+            
+            const meta = yfData.chart.result[0].meta;
+            const price = meta.regularMarketPrice;
+            const prevClose = meta.previousClose;
+            const changeRaw = price - prevClose;
+            const changePct = (changeRaw / prevClose) * 100;
+            const isUp = changeRaw >= 0;
+            
+            return {
+              ...ticker,
+              p: price < 10 ? price.toFixed(4) : price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+              c: `${isUp ? "+" : ""}${changePct.toFixed(2)}%`,
+              up: isUp
+            };
+          } catch (error) {
+            console.error(`Failed to fetch ${ticker.sym}:`, error);
+            // Fallback to what we have if fetch fails
+            return ticker;
+          }
+        })
+      );
+
+      if (mounted) {
+        setTickers(updated);
+      }
+    }
+
+    fetchLivePrices();
+
+    // Poll every 60 seconds for live updates
+    const interval = setInterval(fetchLivePrices, 60000);
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  const items = [...tickers, ...tickers, ...tickers, ...tickers]; // Quadruple to ensure smooth infinite scrolling
+  
   return (
-    <div className="relative overflow-hidden border-y border-border/60 bg-surface/40 py-3">
-      <div className="ticker-track flex w-max gap-10 whitespace-nowrap font-mono text-xs">
+    <div className="relative overflow-hidden border-y border-border/60 bg-surface/40 py-3 flex">
+      <div className="ticker-track flex w-max gap-10 whitespace-nowrap font-mono text-xs hover:[animation-play-state:paused]">
         {items.map((t, i) => (
-          <div key={i} className="flex items-center gap-3">
+          <div key={`${t.sym}-${i}`} className="flex items-center gap-3">
             <span className="text-muted-foreground">{t.s}</span>
-            <span className="text-foreground">{t.p}</span>
-            <span className={t.up ? "text-profit" : "text-loss"}>{t.c}</span>
+            <span className="text-foreground font-semibold">{t.p}</span>
+            <span className={t.p === "..." ? "text-muted-foreground" : (t.up ? "text-profit" : "text-loss")}>
+              {t.c}
+            </span>
           </div>
         ))}
       </div>

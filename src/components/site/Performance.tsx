@@ -1,4 +1,4 @@
-import equity from "@/assets/equity-curve.jpg";
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
 
 const STATS = [
   { label: "Win Rate", value: "68.4%", sub: "Across 12,408 closed trades", tone: "profit" },
@@ -12,6 +12,17 @@ const MONTHS = [
   { m: "Apr", v: 7.4 }, { m: "May", v: 9.2 }, { m: "Jun", v: 3.1 },
   { m: "Jul", v: 11.4 }, { m: "Aug", v: -2.6 }, { m: "Sep", v: 8.0 },
   { m: "Oct", v: 5.3 }, { m: "Nov", v: 12.1 }, { m: "Dec", v: 6.8 },
+];
+
+const EQUITY_DATA = [
+  { month: "M1", value: 10000 }, { month: "M2", value: 10420 }, { month: "M3", value: 11056 },
+  { month: "M4", value: 10857 }, { month: "M5", value: 11660 }, { month: "M6", value: 12732 },
+  { month: "M7", value: 13127 }, { month: "M8", value: 14623 }, { month: "M9", value: 14243 },
+  { month: "M10", value: 15382 }, { month: "M11", value: 16198 }, { month: "M12", value: 18158 },
+  { month: "M13", value: 19391 }, { month: "M14", value: 18984 }, { month: "M15", value: 20692 },
+  { month: "M16", value: 21914 }, { month: "M17", value: 23141 }, { month: "M18", value: 22655 },
+  { month: "M19", value: 25238 }, { month: "M20", value: 24582 }, { month: "M21", value: 26549 },
+  { month: "M22", value: 27956 }, { month: "M23", value: 31338 }, { month: "M24", value: 33467 },
 ];
 
 export function Performance() {
@@ -49,37 +60,59 @@ export function Performance() {
         </div>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-5">
-          <div className="overflow-hidden rounded-xl border border-border/60 bg-surface p-6 lg:col-span-3">
-            <div className="flex items-center justify-between">
+          <div className="overflow-hidden rounded-xl border border-border/60 bg-surface p-6 lg:col-span-3 flex flex-col">
+            <div className="flex items-center justify-between mb-6">
               <h3 className="text-base font-semibold">Equity Curve · 24 Months</h3>
-              <span className="font-mono text-xs text-profit">+184.6%</span>
+              <span className="font-mono text-xs text-profit">+234.6%</span>
             </div>
-            <div className="mt-4 overflow-hidden rounded-md border border-border/60">
-              <img
-                src={equity}
-                alt="Equity curve growth"
-                loading="lazy"
-                width={1200}
-                height={600}
-                className="h-full w-full object-cover"
-              />
+            <div className="flex-1 w-full min-h-[220px] rounded-md">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={EQUITY_DATA} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="oklch(0.7 0.16 160)" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="oklch(0.7 0.16 160)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="oklch(0.5 0 0 / 0.2)" />
+                  <XAxis 
+                    dataKey="month" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: 'oklch(0.6 0 0)', fontSize: 10 }}
+                    minTickGap={20}
+                  />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: 'oklch(0.6 0 0)', fontSize: 10 }}
+                    tickFormatter={(value) => `$${(value/1000)}k`}
+                    width={45}
+                  />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: 'oklch(0.2 0 0)', borderColor: 'oklch(0.3 0 0)', borderRadius: '8px', fontSize: '12px' }}
+                    itemStyle={{ color: 'oklch(0.7 0.16 160)' }}
+                  />
+                  <Area type="monotone" dataKey="value" stroke="oklch(0.7 0.16 160)" strokeWidth={2} fillOpacity={1} fill="url(#colorValue)" />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
-          <div className="rounded-xl border border-border/60 bg-surface p-6 lg:col-span-2">
-            <div className="flex items-center justify-between">
+          <div className="rounded-xl border border-border/60 bg-surface p-6 lg:col-span-2 flex flex-col">
+            <div className="flex items-center justify-between mb-8">
               <h3 className="text-base font-semibold">Monthly Returns · 2024</h3>
               <span className="font-mono text-xs text-muted-foreground">YTD +69.2%</span>
             </div>
-            <div className="mt-6 flex h-56 items-end gap-2">
+            <div className="flex-1 flex items-end gap-2 min-h-[220px]">
               {MONTHS.map((m) => {
                 const h = (Math.abs(m.v) / max) * 100;
                 const positive = m.v >= 0;
                 return (
-                  <div key={m.m} className="flex flex-1 flex-col items-center gap-2">
-                    <div className="relative flex h-full w-full items-end justify-center">
+                  <div key={m.m} className="flex flex-col h-full items-center justify-end gap-3 flex-1">
+                    <div className="relative flex-1 w-full flex items-end justify-center">
                       <div
-                        className={`w-full rounded-sm ${positive ? "bg-profit/80" : "bg-loss/80"}`}
+                        className={`w-full max-w-[24px] rounded-t-sm transition-all duration-500 hover:opacity-80 ${positive ? "bg-profit" : "bg-loss"}`}
                         style={{ height: `${h}%` }}
                         title={`${m.m}: ${m.v}%`}
                       />
