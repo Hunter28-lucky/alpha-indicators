@@ -15,17 +15,17 @@ import { Footer } from "@/components/site/Footer";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Veridian | Number #1 Institutional & Custom Trading Indicators" },
+      { title: "Veridian | The Most Powerful Trading Indicator Tools" },
       {
         name: "description",
         content:
-          "Discover the best trading indicator tools. From premium institutional logic featuring liquidity zones and FVGs, to building your own custom trading indicator.",
+          "Find your next new indicator. From a powerful trading indicator with institutional logic to building your own custom trading indicator, Veridian has the ultimate tools.",
       },
-      { property: "og:title", content: "Veridian | Number #1 Institutional & Custom Trading Indicators" },
+      { property: "og:title", content: "Veridian | The Most Powerful Trading Indicator Tools" },
       {
         property: "og:description",
         content:
-          "Master the markets with the best custom trading indicator solutions. Expertly engineered for precise analysis on TradingView.",
+          "Find your next new indicator. From a powerful trading indicator with institutional logic to building your own custom trading indicator, Veridian has the ultimate tools.",
       },
     ],
     scripts: [
@@ -37,8 +37,8 @@ export const Route = createFileRoute("/")({
           "name": "Veridian Trading Indicators",
           "operatingSystem": "TradingView",
           "applicationCategory": "FinanceApplication",
-          "url": "https://veridian.com",
-          "description": "Premium institutional-grade trading indicators and custom trading indicator development services for serious traders.",
+          "url": "https://alpha-indicators.vercel.app",
+          "description": "Powerful trading indicators, new indicator algorithms, and custom trading indicator development services.",
           "offers": {
             "@type": "Offer",
             "price": "49.00",

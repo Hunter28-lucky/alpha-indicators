@@ -4,6 +4,13 @@ import { Footer } from "@/components/site/Footer";
 import { Check, ShieldCheck, Star } from "lucide-react";
 
 export const Route = createFileRoute("/indicators")({
+  head: () => ({
+    meta: [
+      { title: "Browse Powerful Trading Indicators | Veridian" },
+      { name: "description", content: "Looking for a new indicator? Browse our suite of powerful trading indicators designed to give you a market edge. Best indicators for TradingView." },
+      { name: "keywords", content: "indicator, new indicator, powerful trading indicator, tradingview indicators, best trading indicator" },
+    ],
+  }),
   component: IndicatorsPage,
 });
 
