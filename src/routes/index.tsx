@@ -15,17 +15,42 @@ import { Footer } from "@/components/site/Footer";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Veridian — Institutional-Grade Trading Indicators" },
+      { title: "Veridian | Number #1 Institutional & Custom Trading Indicators" },
       {
         name: "description",
         content:
-          "Premium trading indicators built with institutional logic. Liquidity zones, smart money signals, FVG and volume profile — engineered for disciplined traders.",
+          "Discover the best trading indicator tools. From premium institutional logic featuring liquidity zones and FVGs, to building your own custom trading indicator.",
       },
-      { property: "og:title", content: "Veridian — Institutional-Grade Trading Indicators" },
+      { property: "og:title", content: "Veridian | Number #1 Institutional & Custom Trading Indicators" },
       {
         property: "og:description",
         content:
-          "Built with precision. Designed for consistency. Trusted by disciplined traders worldwide.",
+          "Master the markets with the best custom trading indicator solutions. Expertly engineered for precise analysis on TradingView.",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "Veridian Trading Indicators",
+          "operatingSystem": "TradingView",
+          "applicationCategory": "FinanceApplication",
+          "url": "https://veridian.com",
+          "description": "Premium institutional-grade trading indicators and custom trading indicator development services for serious traders.",
+          "offers": {
+            "@type": "Offer",
+            "price": "49.00",
+            "priceCurrency": "USD",
+            "category": "subscription"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "ratingCount": "153"
+          }
+        }),
       },
     ],
   }),

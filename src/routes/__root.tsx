@@ -30,10 +30,15 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Veridian — Institutional Trading Indicators" },
-      { name: "description", content: "Premium, institutional-grade trading indicators for serious traders." },
+      { title: "Veridian | Best Premium & Custom Trading Indicators" },
+      { name: "description", content: "Access the best institutional-grade trading indicators. Elevate your strategy with premium custom trading indicators, algorithmic logic, and smart money tools." },
+      { name: "keywords", content: "best trading indicator, custom trading indicator, tradingview indicators, institutional trading indicators, smart money concepts indicator, algorithmic trading, veridian" },
       { property: "og:type", content: "website" },
+      { property: "og:title", content: "Veridian | Best Premium & Custom Trading Indicators" },
+      { property: "og:description", content: "Access the best institutional-grade trading indicators. Elevate your strategy with premium custom trading indicators, algorithmic logic, and smart money tools." },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Veridian | Best Premium & Custom Trading Indicators" },
+      { name: "twitter:description", content: "Access the best institutional-grade trading indicators. Elevate your strategy with premium custom trading indicators, algorithmic logic, and smart money tools." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

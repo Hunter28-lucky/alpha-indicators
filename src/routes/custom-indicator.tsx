@@ -7,6 +7,37 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/custom-indicator")({
+  head: () => ({
+    meta: [
+      { title: "Best Custom Trading Indicator Development | Veridian" },
+      { name: "description", content: "Need the best custom trading indicator for TradingView? We develop bespoke Pine Script indicators tailored to your exact strategy and algorithmic needs." },
+      { name: "keywords", content: "custom trading indicator, best custom indicator, tradingview custom script, pine script developer, algorithmic trading indicator development" },
+      { property: "og:title", content: "Best Custom Trading Indicator Development | Veridian" },
+      { property: "og:description", content: "Need the best custom trading indicator for TradingView? We develop bespoke Pine Script indicators tailored to your exact strategy and algorithmic needs." },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "serviceType": "Custom Trading Indicator Development",
+          "provider": {
+            "@type": "Organization",
+            "name": "Veridian",
+            "url": "https://veridian.com"
+          },
+          "description": "Professional creation of the best custom trading indicators on TradingView.",
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock",
+            "valieFrom": "2023-01-01"
+          }
+        }),
+      },
+    ],
+  }),
   component: CustomIndicatorPage,
 });
 
