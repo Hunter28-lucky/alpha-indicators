@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://veridian.com/sitemap.xml
+Sitemap: https://alpha-indicators.vercel.app/sitemap.xml
