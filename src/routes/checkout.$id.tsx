@@ -107,13 +107,14 @@ interface PaymentFormProps {
 }
 
 const PaymentForm = memo(function PaymentForm({ price, onSubmit, loading }: PaymentFormProps) {
-  const [name, setName]   = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await onSubmit({ name, email, phone });
+    const formData = new FormData(e.currentTarget);
+    await onSubmit({
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      phone: formData.get("phone") as string,
+    });
   };
 
   return (
@@ -127,10 +128,10 @@ const PaymentForm = memo(function PaymentForm({ price, onSubmit, loading }: Paym
           <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
           <input
             type="text"
+            name="name"
             required
             autoComplete="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            defaultValue=""
             placeholder="John Doe"
             className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none transition-all text-slate-900 placeholder:text-slate-400"
           />
@@ -146,10 +147,10 @@ const PaymentForm = memo(function PaymentForm({ price, onSubmit, loading }: Paym
           <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
           <input
             type="email"
+            name="email"
             required
             autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            defaultValue=""
             placeholder="john@example.com"
             className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none transition-all text-slate-900 placeholder:text-slate-400"
           />
@@ -165,10 +166,10 @@ const PaymentForm = memo(function PaymentForm({ price, onSubmit, loading }: Paym
           <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
           <input
             type="tel"
+            name="phone"
             required
             autoComplete="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            defaultValue=""
             placeholder="+91 98765 43210"
             className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none transition-all text-slate-900 placeholder:text-slate-400"
           />
@@ -213,7 +214,7 @@ async function sendToGoogleSheets(payload: {
   try {
     await fetch(webhookUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(payload),
       mode: "no-cors", // Google Apps Script requires no-cors
     });
