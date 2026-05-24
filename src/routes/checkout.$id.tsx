@@ -1,19 +1,16 @@
-import { createFileRoute, Link, useParams } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect, useRef } from "react";
 import { Header } from "@/components/site/Header";
 import {
   Check,
   ShieldCheck,
   ArrowLeft,
   Smartphone,
-  ScanLine,
-  Clock,
-  AlertCircle,
   Lock,
-  Headset,
-  CheckCircle2
+  CheckCircle2,
+  Loader2
 } from "lucide-react";
-import qrCodeImage from "@/assets/upi-qr.png";
+
 import ind1 from "@/assets/indicator-1.jpg";
 import ind2 from "@/assets/indicator-2.jpg";
 import ind3 from "@/assets/indicator-3.jpg";
@@ -95,9 +92,15 @@ function CheckoutPage() {
   const { id } = Route.useParams();
   const indicator = INDICATORS[id] || INDICATORS["liquidity"];
 
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
   const [isMobile, setIsMobile] = useState(false);
-  const upiLink = "upi://pay?pa=8797903378@naviaxis&pn=Krish&am=1000&cu=INR";
+  const [loading, setLoading] = useState(false);
+  const [orderData, setOrderData] = useState<{ order_id: string; amount: number; payment_page_url: string } | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
+  const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+
+  // Refs for intervals
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -105,21 +108,72 @@ function CheckoutPage() {
     };
     setIsMobile(checkMobile());
 
-    if (timeLeft <= 0) return;
-    const intervalId = setInterval(() => {
-      setTimeLeft(t => t - 1);
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, [timeLeft]);
+    return () => {
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    };
+  }, []);
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  const handleCreateOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customerName || !customerEmail) {
+      alert("Please enter your name and email.");
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const response = await fetch("https://gatewayphp-shopifyin05.wasmer.app/api/create_order.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          api_key: import.meta.env.VITE_PAYMENT_API_KEY,
+          amount: indicator.price,
+          customer_name: customerName,
+          customer_email: customerEmail,
+          description: `Order for ${indicator.name}`
+        })
+      });
+      
+      const data = await response.json();
+      if (data.order_id && data.payment_page_url) {
+        setOrderData(data);
+        pollStatus(data.order_id);
+      } else {
+        alert("Failed to create order. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred while creating the order.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleMobilePay = () => {
-    window.location.href = upiLink;
+  const pollStatus = (orderId: string) => {
+    if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    
+    pollIntervalRef.current = setInterval(async () => {
+      try {
+        const res = await fetch(`https://gatewayphp-shopifyin05.wasmer.app/api/payment_status.php?order_id=${orderId}`);
+        const text = await res.text();
+        let currentStatus = "";
+        try {
+          const json = JSON.parse(text);
+          currentStatus = json.status || json.payment_status || text;
+        } catch (e) {
+          currentStatus = text;
+        }
+        
+        const normalizedStatus = currentStatus.toString().toLowerCase().trim();
+        setPaymentStatus(normalizedStatus);
+
+        if (normalizedStatus === "success" || normalizedStatus === "failed" || normalizedStatus === "expired") {
+          if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+        }
+      } catch (e) {
+        console.error("Polling error:", e);
+      }
+    }, 3000);
   };
 
   return (
@@ -131,7 +185,7 @@ function CheckoutPage() {
           
           {/* Left Side: Order Summary & Slider */}
           <div className="w-full lg:w-5/12 bg-slate-50/50 p-8 lg:p-10 border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col">
-            <Link to="/#indicators" className="inline-flex items-center space-x-2 text-sm font-medium text-slate-500 mb-8 hover:text-slate-900 transition-colors w-fit">
+            <Link to="/indicators" className="inline-flex items-center space-x-2 text-sm font-medium text-slate-500 mb-8 hover:text-slate-900 transition-colors w-fit">
               <ArrowLeft className="w-4 h-4" />
               <span>Back</span>
             </Link>
@@ -156,7 +210,7 @@ function CheckoutPage() {
             <div className="pt-6 mt-6 border-t border-slate-200">
               <div className="flex justify-between items-end">
                 <span className="text-slate-500 font-medium">Total Amount</span>
-                <span className="text-4xl font-bold text-slate-900">₹1000</span>
+                <span className="text-4xl font-bold text-slate-900">₹{indicator.price}</span>
               </div>
             </div>
           </div>
@@ -169,82 +223,107 @@ function CheckoutPage() {
             </div>
             
             <h1 className="text-3xl font-bold text-slate-900 mb-2">Complete Payment</h1>
-            <p className="text-slate-500 mb-10">Scan the QR code or use your UPI app to get instant access.</p>
+            <p className="text-slate-500 mb-10">Follow the steps below to get instant access.</p>
             
             <div className="flex-1 flex flex-col items-center justify-center w-full max-w-sm mx-auto">
               
-              {/* Timer */}
-              <div className="flex items-center justify-center gap-2 mb-8 px-5 py-2.5 rounded-full bg-orange-50 border border-orange-100 text-orange-600 w-fit mx-auto shadow-sm">
-                <Clock className="w-4 h-4" />
-                <span className="font-mono text-lg font-bold tracking-wider">
-                  {formatTime(timeLeft)}
-                </span>
-              </div>
-
-              {timeLeft === 0 ? (
-                <div className="flex flex-col items-center justify-center text-center p-6 border border-red-200 bg-red-50 rounded-2xl w-full">
-                  <AlertCircle className="w-8 h-8 text-red-500 mb-3" />
-                  <h3 className="text-lg font-bold text-slate-900 mb-1">Session Expired</h3>
-                  <p className="text-sm text-slate-600 mb-6">For security reasons, your payment session has timed out.</p>
-                  <button onClick={() => window.location.reload()} className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-semibold transition-colors shadow-md">
-                    Generate New QR Code
-                  </button>
+              {paymentStatus === "success" ? (
+                <div className="flex flex-col items-center justify-center text-center p-8 border border-emerald-200 bg-emerald-50 rounded-2xl w-full">
+                  <CheckCircle2 className="w-16 h-16 text-emerald-500 mb-4" />
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2">Payment Successful!</h3>
+                  <p className="text-slate-600 mb-8">Your order has been processed successfully. You now have lifetime access.</p>
+                  <Link to="/" className="w-full px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow-lg transition-transform hover:scale-[1.02]">
+                    Return Home
+                  </Link>
                 </div>
-              ) : (
+              ) : orderData ? (
                 <div className="w-full flex flex-col items-center">
-                  {isMobile ? (
-                    <div className="flex flex-col w-full gap-4">
-                      <button
-                        onClick={handleMobilePay}
-                        className="w-full flex items-center justify-center gap-3 py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg transition-transform hover:scale-[1.02] active:scale-[0.98] shadow-[0_8px_20px_-4px_rgba(5,150,105,0.4)]"
-                      >
-                        <Smartphone className="w-6 h-6" />
-                        Pay with UPI App
-                      </button>
-                      <p className="text-center text-sm text-slate-500 mt-2 font-medium">
-                        Tap to open GPay, PhonePe, Paytm, or any UPI app
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center">
-                      <div className="relative flex items-center justify-center w-64 h-64 p-2 bg-white border border-slate-200 rounded-2xl shadow-sm">
-                        <img 
-                          src={qrCodeImage} 
-                          alt="UPI QR Code" 
-                          className="w-full h-full object-contain rounded-xl"
-                        />
-                      </div>
-                      <div className="flex items-center gap-2 mt-6 text-slate-600 bg-slate-50 px-4 py-2 rounded-lg border border-slate-200">
-                        <ScanLine className="w-4 h-4" />
-                        <span className="text-sm font-semibold">Scan with any UPI App</span>
-                      </div>
+                  <div className="text-center mb-8 p-6 bg-slate-50 border border-slate-100 rounded-2xl w-full">
+                    <h3 className="text-xl font-bold text-slate-900 mb-1">Order Created</h3>
+                    <p className="text-slate-500">Amount to pay: <span className="font-bold text-slate-900">₹{orderData.amount}</span></p>
+                    <p className="text-xs text-slate-400 mt-2">Order ID: {orderData.order_id}</p>
+                  </div>
+                  
+                  <a
+                    href={orderData.payment_page_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-3 py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg transition-transform hover:scale-[1.02] shadow-lg mb-8"
+                  >
+                    <Smartphone className="w-6 h-6" />
+                    Proceed to Pay
+                  </a>
+
+                  <div className="flex flex-col items-center justify-center p-6 border border-slate-200 bg-white rounded-2xl w-full shadow-sm">
+                    <Loader2 className="w-8 h-8 text-emerald-500 animate-spin mb-3" />
+                    <p className="text-slate-900 font-bold">Waiting for payment...</p>
+                    <p className="text-sm text-slate-500 mt-1 text-center">Do not close this window. It will automatically update once you pay.</p>
+                  </div>
+                  
+                  {(paymentStatus === "failed" || paymentStatus === "expired") && (
+                    <div className="mt-6 p-4 bg-red-50 text-red-600 rounded-xl w-full text-center font-medium border border-red-100">
+                      Payment {paymentStatus}. Please refresh and try again.
                     </div>
                   )}
-
-                  <div className="mt-10 text-center w-full pt-6 border-t border-slate-100">
-                    <p className="text-sm text-slate-600 flex items-center justify-center gap-2 font-medium">
-                      <ShieldCheck className="w-5 h-5 text-emerald-500" />
-                      100% Secure Payment by Naviaxis
-                    </p>
-                    <p className="text-xs text-slate-400 mt-2">
-                      Your access is activated instantly upon successful payment.
-                    </p>
-                  </div>
-
-                  <div className="mt-6 grid grid-cols-2 gap-3 w-full max-w-[280px]">
-                    <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
-                      <Lock className="w-5 h-5 text-slate-700 mb-1.5" />
-                      <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wide">256-bit SSL</span>
-                      <span className="text-[10px] text-slate-500">Secure Checkout</span>
-                    </div>
-                    <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500 mb-1.5" />
-                      <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wide">Instant Setup</span>
-                      <span className="text-[10px] text-slate-500">Automated Delivery</span>
-                    </div>
-                  </div>
                 </div>
+              ) : (
+                <form onSubmit={handleCreateOrder} className="w-full flex flex-col gap-5">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Full Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      placeholder="John Doe"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email Address</label>
+                    <input
+                      type="email"
+                      required
+                      value={customerEmail}
+                      onChange={(e) => setCustomerEmail(e.target.value)}
+                      placeholder="john@example.com"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full flex items-center justify-center gap-3 py-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg transition-transform hover:scale-[1.02] shadow-lg disabled:opacity-70 disabled:cursor-not-allowed mt-2"
+                  >
+                    {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <Lock className="w-6 h-6" />}
+                    {loading ? "Generating Payment Link..." : "Pay ₹" + indicator.price}
+                  </button>
+                  <p className="text-center text-sm text-slate-500 mt-2 font-medium">
+                    You will be redirected to our secure payment gateway
+                  </p>
+                </form>
               )}
+
+              <div className="mt-10 text-center w-full pt-6 border-t border-slate-100">
+                <p className="text-sm text-slate-600 flex items-center justify-center gap-2 font-medium">
+                  <ShieldCheck className="w-5 h-5 text-emerald-500" />
+                  100% Secure Payment
+                </p>
+              </div>
+
+              <div className="mt-6 grid grid-cols-2 gap-3 w-full max-w-[280px]">
+                <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
+                  <Lock className="w-5 h-5 text-slate-700 mb-1.5" />
+                  <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wide">256-bit SSL</span>
+                  <span className="text-[10px] text-slate-500">Secure Checkout</span>
+                </div>
+                <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500 mb-1.5" />
+                  <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wide">Instant Setup</span>
+                  <span className="text-[10px] text-slate-500">Automated Delivery</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -264,3 +343,4 @@ function CheckoutPage() {
     </div>
   );
 }
+
