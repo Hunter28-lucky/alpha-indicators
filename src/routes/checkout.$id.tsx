@@ -261,9 +261,10 @@ function CheckoutPage() {
                       <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                       <input id="inp-name" name="name" type="text" required autoComplete="name"
                              placeholder="John Doe"
-                             className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white
+                             style={{ color: "#000000", backgroundColor: "#ffffff" }}
+                             className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-200
                                         focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100
-                                        outline-none transition-all text-slate-900 placeholder:text-slate-400" />
+                                        outline-none transition-all placeholder:text-slate-400" />
                     </div>
                   </div>
                   {/* Email */}
@@ -273,9 +274,10 @@ function CheckoutPage() {
                       <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                       <input id="inp-email" name="email" type="email" required autoComplete="email"
                              placeholder="john@example.com"
-                             className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white
+                             style={{ color: "#000000", backgroundColor: "#ffffff" }}
+                             className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-200
                                         focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100
-                                        outline-none transition-all text-slate-900 placeholder:text-slate-400" />
+                                        outline-none transition-all placeholder:text-slate-400" />
                     </div>
                   </div>
                   {/* Phone */}
@@ -285,9 +287,10 @@ function CheckoutPage() {
                       <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                       <input id="inp-phone" name="phone" type="tel" required autoComplete="tel"
                              placeholder="+91 98765 43210"
-                             className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-200 bg-white
+                             style={{ color: "#000000", backgroundColor: "#ffffff" }}
+                             className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-200
                                         focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100
-                                        outline-none transition-all text-slate-900 placeholder:text-slate-400" />
+                                        outline-none transition-all placeholder:text-slate-400" />
                     </div>
                   </div>
 
