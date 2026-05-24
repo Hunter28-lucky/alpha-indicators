@@ -206,8 +206,9 @@ async function sendToGoogleSheets(payload: {
   orderId: string;
   status: string;
 }) {
-  const webhookUrl = import.meta.env.VITE_SHEETS_WEBHOOK_URL;
-  if (!webhookUrl) return; // silently skip if not configured yet
+  const webhookUrl =
+    import.meta.env.VITE_SHEETS_WEBHOOK_URL ||
+    "https://script.google.com/macros/s/AKfycbwQnuodPOb6U8JWmxN031mDFjoAi4PThrnYx-FcmPsnV-77soheA801EpCRNY_limoQ/exec";
 
   try {
     await fetch(webhookUrl, {
