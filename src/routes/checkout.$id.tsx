@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef, useCallback, memo } from "react";
-import { Header } from "@/components/site/Header";
 import {
   Check,
   ShieldCheck,
@@ -212,11 +211,16 @@ async function sendToGoogleSheets(payload: {
     "https://script.google.com/macros/s/AKfycbwQnuodPOb6U8JWmxN031mDFjoAi4PThrnYx-FcmPsnV-77soheA801EpCRNY_limoQ/exec";
 
   try {
+    const formParams = new URLSearchParams();
+    Object.entries(payload).forEach(([key, value]) => {
+      formParams.append(key, String(value));
+    });
+
     await fetch(webhookUrl, {
       method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload),
-      mode: "no-cors", // Google Apps Script requires no-cors
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formParams.toString(),
+      mode: "no-cors",
     });
   } catch (_) {
     // Non-blocking — don't interrupt payment flow
@@ -329,8 +333,6 @@ function CheckoutPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-100 font-sans text-slate-900 selection:bg-emerald-200">
-      <Header />
-
       <main className="flex-1 flex justify-center py-8 md:py-16 px-4">
         <div className="w-full max-w-5xl bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden flex flex-col lg:flex-row border border-slate-200">
 

@@ -17,22 +17,36 @@ function doPost(e) {
     var ss = SpreadsheetApp.openById(SHEET_ID);
     var sheet = ss.getSheets()[0];
 
-    // Add header row if sheet is empty
+    // Add a beautifully formatted header row if sheet is empty
     if (sheet.getLastRow() === 0) {
       sheet.appendRow([
-        "Timestamp",
+        "Date & Time",
         "Full Name",
-        "Email",
-        "Phone",
-        "Product",
+        "Email Address",
+        "Phone Number",
+        "Product Name",
         "Amount (₹)",
         "Order ID",
-        "Status"
+        "Payment Status"
       ]);
-      sheet.getRange(1, 1, 1, 8).setFontWeight("bold");
+      
+      var headerRange = sheet.getRange(1, 1, 1, 8);
+      headerRange.setFontWeight("bold");
+      headerRange.setBackground("#10b981"); // Beautiful emerald green
+      headerRange.setFontColor("white");
+      sheet.setFrozenRows(1); // Freeze the header
+      
+      // Auto-resize columns to fit content nicely
+      sheet.autoResizeColumns(1, 8);
     }
 
-    var data = JSON.parse(e.postData.contents);
+    // Support URL-encoded form data (bulletproof for no-cors)
+    var data = e.parameter || {};
+    
+    // Fallback in case of JSON payload
+    if (e.postData && e.postData.type === "application/json" && e.postData.contents) {
+      data = JSON.parse(e.postData.contents);
+    }
 
     sheet.appendRow([
       new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
@@ -56,9 +70,9 @@ function doPost(e) {
   }
 }
 
-// Health check
+// Health check endpoint for testing in browser
 function doGet(e) {
   return ContentService
-    .createTextOutput(JSON.stringify({ status: "ok" }))
+    .createTextOutput(JSON.stringify({ status: "ok", message: "Webhook is live!" }))
     .setMimeType(ContentService.MimeType.JSON);
 }
